@@ -1,0 +1,25 @@
+{
+  "name": "fabricjs-node-img",
+  "version": "1.0.0",
+  "description": "fabri generate img",
+  "main": "index.js",
+  "scripts": {
+    "test": "test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evious/fabricjs-node-img.git"
+  },
+  "author": "francarlos Blanco",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/evious/fabricjs-node-img/issues"
+  },
+  "homepage": "https://github.com/evious/fabricjs-node-img#readme",
+  "dependencies": {
+    "buffer": "^6.0.3",
+    "canvas": "^2.6.1",
+    "fabric": "^4.3.0",
+    "lorem-ipsum": "^2.0.3"
+  }
+}
