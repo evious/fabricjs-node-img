@@ -8,7 +8,7 @@ const { JSDOM } = require("jsdom");
 const { document } = new JSDOM("").window;
 const {Canvasnode} = require('fabricjs-node-img');
 global.document = document;
-<code>
+
 (async function() {    
     let jsonFile = await JSON.parse(fs.readFileSync('./json/1.json'));
     let generatePng = new Canvasnode(jsonFile);    
