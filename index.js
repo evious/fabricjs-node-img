@@ -62,7 +62,7 @@ class Canvasnode{
                 });   
                 dataURL = await dataURL.replace("data:image/png;base64,", "");
                 let img  = await  new Buffer(dataURL, 'base64');            
-                await fs.writeFileSync(`${this.conf.DEST_FOLDER}${this.conf.IMAGE.name}${mult}_thumb.png`, img, function(err) {                        
+                await fs.writeFileSync(`${this.conf.DEST_FOLDER}${this.conf.IMAGE.name}${mult}_thumb.${this.conf.IMAGE.format}`, img, function(err) {                        
                     return err;
                 });
                 resolve(true); 
