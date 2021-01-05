@@ -1,5 +1,8 @@
 # fabricjs-node-img
 genera imagenes png y svg
+
+```sh
+
 const fs = require('fs');
 const { JSDOM } = require("jsdom");
 const { document } = new JSDOM("").window;
@@ -13,4 +16,4 @@ global.document = document;
     console.log(loadjson);
 })();
 
-</code>
+```
