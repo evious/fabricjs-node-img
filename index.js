@@ -10,9 +10,9 @@ const lorem = new LoremIpsum({
 });
 
 class Canvasnode{
-    constructor(json){
-     this.json = json;
-     this.virtualCanvas = [];
+    constructor(conf){
+        this.conf = conf;
+        this.virtualCanvas = [];
     }
     async loadCanvas(){
         try {
@@ -22,7 +22,7 @@ class Canvasnode{
                 backgroundColor: "#ffffff",
             }; 
             this.virtualCanvas = new fabric.Canvas(null, canvasOptions);
-            let jsonpromise = await this.loadjson(this.json);    
+            let jsonpromise = await this.loadjson(this.conf.JSON_STRING);    
             let objects = this.virtualCanvas.toJSON().objects;
             for ( let x in objects){
                 if( this.virtualCanvas.item(x).type === 'i-text' || 
@@ -31,12 +31,15 @@ class Canvasnode{
                 }
             }
             this.virtualCanvas.renderAll();    
-            await this.createpng(400);
-            await this.createpng(800);
-            await this.createpng(1000);
-            await this.createpng(2000);
-            await fs.writeFileSync('./file/svg.svg', this.virtualCanvas.toSVG(['uuid','id']));
-            await fs.writeFileSync('./file/svg.json', JSON.stringify(this.virtualCanvas.toJSON(['uuid','id'])));
+            for(let image of this.conf.IMAGE.size){
+                await this.createpng(image);
+            }      
+            if( this.conf.SVG ){
+                await fs.writeFileSync(`${this.conf.DEST_FOLDER}${this.conf.IMAGE.name}.svg`, this.virtualCanvas.toSVG(['uuid','id']));
+            }
+            if( this.conf.JSON ){
+                await fs.writeFileSync(`${this.conf.DEST_FOLDER}${this.conf.IMAGE.name}.json`, JSON.stringify(this.virtualCanvas.toJSON(['uuid','id'])));
+            }
             console.log(this.virtualCanvas.toJSON());
             
         } catch (error) {
@@ -49,7 +52,7 @@ class Canvasnode{
             return new Promise(async(resolve, reject) => {
                 let multipl = mult/this.virtualCanvas.canvas_width;
                 let dataURL = await this.virtualCanvas.toDataURL({
-                    format: "png",
+                    format: this.conf.IMAGE.format,
                     left: 0,
                     top: 0,
                     width: this.virtualCanvas.canvas_width ,
@@ -59,7 +62,7 @@ class Canvasnode{
                 });   
                 dataURL = await dataURL.replace("data:image/png;base64,", "");
                 let img  = await  new Buffer(dataURL, 'base64');            
-                await fs.writeFileSync(`./file/file_${mult}_thumb.png`, img, function(err) {                        
+                await fs.writeFileSync(`${this.conf.DEST_FOLDER}${this.conf.IMAGE.name}${mult}_thumb.png`, img, function(err) {                        
                     return err;
                 });
                 resolve(true); 
