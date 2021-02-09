@@ -3,6 +3,7 @@ var canvas = require("canvas");
 var fabric = require("fabric").fabric;
 const { LoremIpsum } = require("lorem-ipsum");
 var Buffer = require('buffer/').Buffer;
+const FileSaver = "file-saver";
 
 const lorem = new LoremIpsum({
     sentencesPerParagraph: { max: 8, min: 4},
@@ -13,6 +14,22 @@ class Canvasnode{
     constructor(conf){
         this.conf = conf;
         this.virtualCanvas = [];
+    }
+    async generateImage(){
+        try {
+            for(let image of this.conf.IMAGE.size){
+                await this.createpng(image);
+            }      
+            if( this.conf.SVG ){
+                await fs.writeFileSync(`${this.conf.DEST_FOLDER}${this.conf.IMAGE.name}.svg`, this.virtualCanvas.toSVG(['uuid','id']));
+            }
+            if( this.conf.JSON ){
+                await fs.writeFileSync(`${this.conf.DEST_FOLDER}${this.conf.IMAGE.name}.json`, JSON.stringify(this.virtualCanvas.toJSON(['uuid','id'])));
+            }
+            
+        } catch (error) {
+           return false; 
+        }
     }
     async loadCanvas(){
         try {
@@ -30,23 +47,35 @@ class Canvasnode{
                     this.virtualCanvas.item(x).text = lorem.generateWords(6);
                 }
             }
-            this.virtualCanvas.renderAll();    
-            for(let image of this.conf.IMAGE.size){
-                await this.createpng(image);
-            }      
-            if( this.conf.SVG ){
-                await fs.writeFileSync(`${this.conf.DEST_FOLDER}${this.conf.IMAGE.name}.svg`, this.virtualCanvas.toSVG(['uuid','id']));
-            }
-            if( this.conf.JSON ){
-                await fs.writeFileSync(`${this.conf.DEST_FOLDER}${this.conf.IMAGE.name}.json`, JSON.stringify(this.virtualCanvas.toJSON(['uuid','id'])));
-            }
-            console.log(this.virtualCanvas.toJSON());
-            
+            this.virtualCanvas.renderAll();
         } catch (error) {
             return error;
         }
     }
 
+    async toJson(){
+        try {
+            return this.virtualCanvas.toJSON();
+        } catch (error) {
+            return true;
+        } 
+    }
+
+    async donwloadImage(type){
+        try {
+            this.virtualCanvas.getElement().toBlob(async blob => {
+                await this.savePngImage(blob);
+                this.dialogSave = false;
+            }, type);   
+        } catch (error) {
+            
+        }
+
+    }
+    savePngImage(blob) {
+        this.loadingDownload = false;
+        FileSaver.saveAs(blob, "image.png");
+    }
     async  createpng (mult) {
         try{
             return new Promise(async(resolve, reject) => {

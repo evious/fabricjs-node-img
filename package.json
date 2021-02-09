@@ -1,6 +1,6 @@
 {
   "name": "fabricjs-node-img",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "fabri generate img",
   "main": "index.js",
   "scripts": {
@@ -20,6 +20,7 @@
     "buffer": "^6.0.3",
     "canvas": "^2.6.1",
     "fabric": "^4.3.0",
+    "file-saver": "^2.0.5",
     "lorem-ipsum": "^2.0.3"
   }
 }

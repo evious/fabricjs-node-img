@@ -17,4 +17,6 @@ global.document = document;
     }    
     let generatePng = new Canvasnode(conf);    
     let loadjson = await generatePng.loadCanvas();    
+    //await generatePng.generateImage();    
+    await generatePng.donwloadImage("image/png");
 })();
