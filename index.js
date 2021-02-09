@@ -1,36 +1,12 @@
-const fs = require('fs');
 var canvas = require("canvas");
 var fabric = require("fabric").fabric;
-const { LoremIpsum } = require("lorem-ipsum");
-var Buffer = require('buffer/').Buffer;
 const FileSaver = "file-saver";
-
-const lorem = new LoremIpsum({
-    sentencesPerParagraph: { max: 8, min: 4},
-    wordsPerSentence: { max: 16,min: 4 }
-});
-
 class Canvasnode{
     constructor(conf){
         this.conf = conf;
         this.virtualCanvas = [];
     }
-    async generateImage(){
-        try {
-            for(let image of this.conf.IMAGE.size){
-                await this.createpng(image);
-            }      
-            if( this.conf.SVG ){
-                await fs.writeFileSync(`${this.conf.DEST_FOLDER}${this.conf.IMAGE.name}.svg`, this.virtualCanvas.toSVG(['uuid','id']));
-            }
-            if( this.conf.JSON ){
-                await fs.writeFileSync(`${this.conf.DEST_FOLDER}${this.conf.IMAGE.name}.json`, JSON.stringify(this.virtualCanvas.toJSON(['uuid','id'])));
-            }
-            
-        } catch (error) {
-           return false; 
-        }
-    }
+   
     async loadCanvas(){
         try {
             let canvasOptions = {
@@ -76,30 +52,7 @@ class Canvasnode{
         this.loadingDownload = false;
         FileSaver.saveAs(blob, "image.png");
     }
-    async  createpng (mult) {
-        try{
-            return new Promise(async(resolve, reject) => {
-                let multipl = mult/this.virtualCanvas.canvas_width;
-                let dataURL = await this.virtualCanvas.toDataURL({
-                    format: this.conf.IMAGE.format,
-                    left: 0,
-                    top: 0,
-                    width: this.virtualCanvas.canvas_width ,
-                    height: this.virtualCanvas.canvas_height ,
-                    multiplier: multipl,
-                    quality: 0.3
-                });   
-                dataURL = await dataURL.replace("data:image/png;base64,", "");
-                let img  = await  new Buffer(dataURL, 'base64');            
-                await fs.writeFileSync(`${this.conf.DEST_FOLDER}${this.conf.IMAGE.name}${mult}_thumb.${this.conf.IMAGE.format}`, img, function(err) {                        
-                    return err;
-                });
-                resolve(true); 
-            });
-        } catch (error) {
-            return false;
-        }
-    }
+    
     async loadjson(json) {
         try {
           return new Promise((resolve, reject) => {
